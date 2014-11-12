@@ -22,11 +22,12 @@ class asciiFacesView: ScreenSaverView {
     // Frame management
     var currentFrame     = CGFloat(0.0);
     var totalFramesInSet = CGFloat(200.0);
-    var fadeTime         = CGFloat(50.0); // frames.
+    var fadeTime         = CGFloat(75.0); // frames.
     
     // Face management
     var face: String;
     var faceManager      = asciiFaceManager();
+    var pos: NSPoint     = NSPoint();
 
     // Background management
     var bgPath           = NSBezierPath();
@@ -37,7 +38,7 @@ class asciiFacesView: ScreenSaverView {
     var faceColor        = NSColor();
     var textRect         = NSRect();
     var faceString       = NSAttributedString();
-    var faceFont         = NSFont(name: "HelveticaNeue", size: 124.0 )!;
+    var faceFont         = NSFont(name: "HelveticaNeue", size: 228.0 )!;
     var fontStyle        = NSMutableParagraphStyle();
     
     convenience override init() {
@@ -113,12 +114,18 @@ class asciiFacesView: ScreenSaverView {
         // Create rect in the center of the screen, based on the face string height.
         textRect = NSRect();
         textRect.size = NSMakeSize( size.width, faceString.size.height );
-        textRect.origin.x = 0.0;
-        textRect.origin.y = (size.height - faceString.size.height) / 2;
+        textRect.origin = getOrigin(faceString.size, f: frame);
     
         faceString.drawInRect( textRect );
         
         return;
+    }
+    
+    func getOrigin(s: NSSize, f: NSRect) -> NSPoint {
+        if ( currentFrame == 0.0) {
+            pos = SSRandomPointForSizeWithinRect(s, f)
+        }
+        return pos
     }
     
     // Return the alpha value (fade in/out) for the text.
